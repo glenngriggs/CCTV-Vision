@@ -1,0 +1,344 @@
+#!/bin/bash
+
+# Enhanced Computer Vision Pipeline Environment Setup
+echo "🚀 Setting up Enhanced CV Pipeline Environment..."
+
+# Check if conda is installed
+if ! command -v conda &> /dev/null; then
+    echo "❌ Conda is not installed. Please install Anaconda or Miniconda first."
+    echo "Download from: https://docs.conda.io/en/latest/miniconda.html"
+    exit 1
+fi
+
+# Create conda environment
+echo "📦 Creating conda environment 'enhanced_cctv'..."
+conda create -n enhanced_cctv python=3.9 -y
+
+# Activate environment
+echo "🔄 Activating environment..."
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate enhanced_cctv
+
+# Install PyTorch with CUDA support
+echo "🔥 Installing PyTorch with CUDA support..."
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
+
+# Core computer vision libraries
+echo "📷 Installing computer vision libraries..."
+pip install ultralytics  # YOLOv8/YOLOv11
+pip install opencv-python opencv-contrib-python
+
+# Tracking libraries
+echo "🎬 Installing tracking libraries..."
+pip install motmetrics filterpy
+
+# ML/AI libraries
+echo "🤖 Installing ML/AI libraries..."
+pip install transformers sentence-transformers
+pip install open-clip-torch
+pip install timm  # For additional backbone models
+
+# Advanced training optimization
+echo "⚡ Installing optimization libraries..."
+pip install optuna  # Hyperparameter optimization
+pip install wandb   # Experiment tracking
+pip install ray[tune]  # Distributed hyperparameter tuning
+
+# Data handling and visualization
+echo "📊 Installing data and visualization libraries..."
+pip install pandas numpy matplotlib seaborn plotly
+pip install albumentations  # Advanced augmentations
+pip install imgaug  # Additional augmentations
+
+# Attribute classification specific
+echo "🎯 Installing classification libraries..."
+pip install scikit-learn
+pip install xgboost lightgbm  # For ensemble methods
+
+# Utility libraries
+echo "🛠️ Installing utility libraries..."
+pip install tqdm rich typer  # Better CLI interfaces
+pip install pydantic  # Data validation
+pip install hydra-core  # Configuration management
+
+# Jupyter and development tools
+echo "📝 Installing development tools..."
+pip install jupyter ipywidgets
+pip install black flake8 mypy  # Code formatting and type checking
+
+# Install additional dependencies
+echo "🔧 Installing additional dependencies..."
+pip install efficientnet-pytorch  # For attribute classification backbones
+pip install pretrainedmodels
+pip install pytorch-lightning  # For structured training
+
+# Verification
+echo "✅ Verifying installations..."
+
+python -c "import torch; print(f'PyTorch: {torch.__version__}, CUDA: {torch.cuda.is_available()}')" || echo "❌ PyTorch installation failed"
+python -c "import cv2; print(f'OpenCV: {cv2.__version__}')" || echo "❌ OpenCV installation failed"
+python -c "import optuna; print(f'Optuna: {optuna.__version__}')" || echo "❌ Optuna installation failed"
+python -c "import ultralytics; print('YOLOv8: OK')" || echo "❌ YOLOv8 installation failed"
+
+echo "🎯 Environment setup complete!"
+echo "📁 To activate the environment, run: conda activate enhanced_cctv"
+
+# Create project directory structure
+echo "📁 Creating project directory structure..."
+mkdir -p {data/{raw_videos,attribute_dataset/images,models,output,logs},src,results,configs,tests}
+
+echo "📂 Project structure created:"
+echo "   data/raw_videos/        - Place your video files here"
+echo "   data/attribute_dataset/ - Person attribute training data"
+echo "   data/models/           - Trained models"
+echo "   data/output/           - Processing results"
+echo "   src/                   - Source code"
+echo "   results/               - Experiment results"
+echo "   configs/               - Configuration files"
+echo "   tests/                 - Test scripts"
+
+echo "🚀 Ready to start building your CCTV pipeline!"
+
+
+
+""CCTV-Vision/
+│
+├── 📄 README.md                              # Main project documentation
+├── 📄 LICENSE                                # MIT License
+├── 📄 .gitignore                            # Git ignore rules
+├── 📄 requirements.txt                       # Python dependencies
+├── 📄 setup.py                              # Package installation
+├── 📄 pyproject.toml                        # Modern Python packaging
+├── 📄 CHANGELOG.md                          # Version history
+├── 📄 CONTRIBUTING.md                       # Contribution guidelines
+├── 📄 CODE_OF_CONDUCT.md                    # Community guidelines
+│
+├── 📁 .github/                              # GitHub-specific files
+│   ├── workflows/                           # GitHub Actions CI/CD
+│   │   ├── ci.yml                          # Continuous integration
+│   │   ├── tests.yml                       # Automated testing
+│   │   ├── docker-build.yml                # Docker image building
+│   │   └── release.yml                     # Release automation
+│   ├── ISSUE_TEMPLATE/                     # Issue templates
+│   │   ├── bug_report.md
+│   │   ├── feature_request.md
+│   │   └── question.md
+│   ├── PULL_REQUEST_TEMPLATE.md            # PR template
+│   └── FUNDING.yml                         # Sponsorship info
+│
+├── 📁 cctv_vision/                         # Main Python package
+│   ├── __init__.py                         # Package initialization
+│   ├── __version__.py                      # Version information
+│   │
+│   ├── 📁 detection/                       # Person detection module
+│   │   ├── __init__.py
+│   │   ├── person_detector.py              # Main detector class
+│   │   ├── model_manager.py                # Model downloading/caching
+│   │   └── config.py                       # Detection configuration
+│   │
+│   ├── 📁 tracking/                        # Multi-object tracking
+│   │   ├── __init__.py
+│   │   ├── person_tracker.py               # Main tracker class
+│   │   ├── kalman_tracker.py               # Kalman filter implementation
+│   │   ├── track.py                        # Track data structures
+│   │   └── config.py                       # Tracking configuration
+│   │
+│   ├── 📁 attributes/                      # Attribute classification
+│   │   ├── __init__.py
+│   │   ├── classifier.py                   # Attribute classifier
+│   │   ├── models.py                       # Neural network models
+│   │   ├── query_system.py                 # Interactive search
+│   │   └── config.py                       # Attribute configuration
+│   │
+│   ├── 📁 training/                        # Model training system
+│   │   ├── __init__.py
+│   │   ├── trainer.py                      # Main training class
+│   │   ├── dataset.py                      # Dataset handling
+│   │   ├── optimization.py                 # Optuna optimization
+│   │   ├── augmentation.py                 # Data augmentation
+│   │   └── config.py                       # Training configuration
+│   │
+│   ├── 📁 pipeline/                        # Main pipeline integration
+│   │   ├── __init__.py
+│   │   ├── enhanced_pipeline.py            # Complete pipeline
+│   │   ├── base_pipeline.py                # Base pipeline class
+│   │   ├── visualization.py                # Result visualization
+│   │   └── config.py                       # Pipeline configuration
+│   │
+│   ├── 📁 utils/                           # Utility functions
+│   │   ├── __init__.py
+│   │   ├── logging.py                      # Logging utilities
+│   │   ├── metrics.py                      # Performance metrics
+│   │   ├── video_utils.py                  # Video processing
+│   │   ├── image_utils.py                  # Image processing
+│   │   └── config_loader.py                # Configuration loading
+│   │
+│   └── 📁 deployment/                      # Deployment utilities
+│       ├── __init__.py
+│       ├── production.py                   # Production configurations
+│       ├── monitoring.py                   # Performance monitoring
+│       └── edge.py                         # Edge device deployment
+│
+├── 📁 scripts/                             # Utility scripts
+│   ├── setup_environment.sh                # Environment setup script
+│   ├── master_setup.py                     # Complete setup manager
+│   ├── download_models.py                  # Model downloading
+│   ├── create_dataset.py                   # Dataset creation
+│   ├── benchmark.py                        # Performance benchmarking
+│   ├── optimize_models.py                  # Model optimization
+│   ├── deploy_pipeline.py                  # Production deployment
+│   └── validate_installation.py            # Installation validation
+│
+├── 📁 configs/                             # Configuration files
+│   ├── default/                            # Default configurations
+│   │   ├── detection_config.yaml
+│   │   ├── tracking_config.yaml
+│   │   ├── attributes_config.yaml
+│   │   └── pipeline_config.yaml
+│   ├── scenarios/                          # Use-case specific configs
+│   │   ├── real_time_monitoring.yaml
+│   │   ├── forensic_analysis.yaml
+│   │   ├── edge_deployment.yaml
+│   │   └── multi_camera.yaml
+│   └── training/                           # Training configurations
+│       ├── detection_training.yaml
+│       ├── attributes_training.yaml
+│       └── optimization_config.yaml
+│
+├── 📁 tests/                               # Test suite
+│   ├── __init__.py
+│   ├── conftest.py                         # Pytest configuration
+│   ├── test_detection.py                   # Detection module tests
+│   ├── test_tracking.py                    # Tracking module tests
+│   ├── test_attributes.py                  # Attribute classification tests
+│   ├── test_pipeline.py                    # Pipeline integration tests
+│   ├── test_training.py                    # Training system tests
+│   ├── test_utils.py                       # Utility function tests
+│   ├── integration/                        # Integration tests
+│   │   ├── test_end_to_end.py
+│   │   ├── test_multi_camera.py
+│   │   └── test_performance.py
+│   └── data/                               # Test data
+│       ├── sample_images/
+│       ├── sample_videos/
+│       └── mock_annotations/
+│
+├── 📁 docs/                                # Documentation
+│   ├── index.md                            # Documentation home
+│   ├── installation/                       # Installation guides
+│   │   ├── quick_start.md
+│   │   ├── detailed_setup.md
+│   │   ├── docker_setup.md
+│   │   └── troubleshooting.md
+│   ├── user_guide/                         # User documentation
+│   │   ├── basic_usage.md
+│   │   ├── configuration.md
+│   │   ├── interactive_search.md
+│   │   └── multi_camera.md
+│   ├── training/                           # Training documentation
+│   │   ├── colab_training.md
+│   │   ├── local_training.md
+│   │   ├── dataset_preparation.md
+│   │   └── hyperparameter_tuning.md
+│   ├── deployment/                         # Deployment guides
+│   │   ├── production_deployment.md
+│   │   ├── edge_deployment.md
+│   │   ├── docker_deployment.md
+│   │   └── kubernetes_deployment.md
+│   ├── api/                                # API documentation
+│   │   ├── detection_api.md
+│   │   ├── tracking_api.md
+│   │   ├── attributes_api.md
+│   │   └── pipeline_api.md
+│   └── development/                        # Development guides
+│       ├── contributing.md
+│       ├── architecture.md
+│       ├── testing.md
+│       └── performance_optimization.md
+│
+├── 📁 examples/                            # Usage examples
+│   ├── basic_detection.py                  # Simple detection example
+│   ├── tracking_demo.py                    # Tracking demonstration
+│   ├── attribute_search.py                 # Interactive search example
+│   ├── multi_camera_setup.py               # Multi-camera example
+│   ├── batch_processing.py                 # Batch processing example
+│   ├── custom_training.py                  # Training example
+│   └── production_deployment.py            # Production setup example
+│
+├── 📁 notebooks/                           # Jupyter notebooks
+│   ├── 01_Quick_Start_Demo.ipynb           # Quick demonstration
+│   ├── 02_Training_Tutorial.ipynb          # Training walkthrough
+│   ├── 03_Performance_Analysis.ipynb       # Performance evaluation
+│   ├── 04_Dataset_Creation.ipynb           # Dataset preparation
+│   ├── 05_Model_Comparison.ipynb           # Model benchmarking
+│   ├── colab/                              # Google Colab notebooks
+│   │   ├── CCTV_Vision_Training.ipynb      # Complete Colab training
+│   │   ├── Quick_Demo.ipynb                # Colab demo
+│   │   └── Model_Evaluation.ipynb          # Colab evaluation
+│   └── README.md                           # Notebook descriptions
+│
+├── 📁 data/                                # Data directory (gitignored)
+│   ├── models/                             # Model storage
+│   │   ├── detection/                      # Detection models
+│   │   ├── attributes/                     # Attribute models
+│   │   └── pretrained/                     # Pre-trained models
+│   ├── datasets/                           # Training datasets
+│   │   ├── person_detection/
+│   │   └── attributes/
+│   ├── videos/                             # Input videos
+│   │   ├── samples/
+│   │   └── test/
+│   └── output/                             # Processing results
+│       ├── videos/
+│       ├── annotations/
+│       └── statistics/
+│
+├── 📁 docker/                              # Docker configurations
+│   ├── Dockerfile                          # Main Docker image
+│   ├── Dockerfile.dev                      # Development image
+│   ├── Dockerfile.edge                     # Edge deployment image
+│   ├── docker-compose.yml                  # Multi-container setup
+│   ├── docker-compose.dev.yml              # Development compose
+│   └── docker-compose.prod.yml             # Production compose
+│
+├── 📁 k8s/                                 # Kubernetes manifests
+│   ├── namespace.yaml                      # Kubernetes namespace
+│   ├── deployment.yaml                     # Main deployment
+│   ├── service.yaml                        # Service configuration
+│   ├── configmap.yaml                      # Configuration map
+│   ├── secret.yaml                         # Secrets management
+│   └── ingress.yaml                        # Ingress configuration
+│
+├── 📁 monitoring/                          # Monitoring setup
+│   ├── prometheus/                         # Prometheus configuration
+│   │   ├── prometheus.yml
+│   │   └── rules.yml
+│   ├── grafana/                            # Grafana dashboards
+│   │   ├── dashboards/
+│   │   └── provisioning/
+│   └── docker-compose.monitoring.yml       # Monitoring stack
+│
+├── 📁 assets/                              # Static assets
+│   ├── images/                             # Documentation images
+│   │   ├── architecture_diagram.png
+│   │   ├── demo_screenshots/
+│   │   └── performance_charts/
+│   ├── videos/                             # Demo videos
+│   │   ├── quick_demo.mp4
+│   │   └── feature_showcase.mp4
+│   └── logos/                              # Project logos
+│       ├── logo.png
+│       ├── logo_dark.png
+│       └── favicon.ico
+│
+└── 📁 tools/                               # Development tools
+    ├── linting/                            # Code quality tools
+    │   ├── .flake8
+    │   ├── .pylintrc
+    │   └── pyproject.toml
+    ├── pre-commit-hooks.yaml               # Pre-commit configuration
+    ├── environment.yml                     # Conda environment
+    ├── requirements-dev.txt                # Development dependencies
+    └── benchmark_data/                     # Benchmarking data
+        ├── performance_baselines.json
+        └── test_datasets/""
