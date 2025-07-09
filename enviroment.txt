@@ -132,13 +132,13 @@ echo "🚀 Ready to start building your CCTV pipeline!"
 │   │
 │   ├── 📁 detection/                       # Person detection module
 │   │   ├── __init__.py
-│   │   ├── person_detector.py              # Main detector class
+│   │   ├── person_detector.py  added            # Main detector class
 │   │   ├── model_manager.py                # Model downloading/caching
 │   │   └── config.py                       # Detection configuration
 │   │
 │   ├── 📁 tracking/                        # Multi-object tracking
 │   │   ├── __init__.py
-│   │   ├── person_tracker.py               # Main tracker class
+│   │   ├── person_tracker.py   adde            # Main tracker class
 │   │   ├── kalman_tracker.py               # Kalman filter implementation
 │   │   ├── track.py                        # Track data structures
 │   │   └── config.py                       # Tracking configuration
@@ -160,7 +160,7 @@ echo "🚀 Ready to start building your CCTV pipeline!"
 │   │
 │   ├── 📁 pipeline/                        # Main pipeline integration
 │   │   ├── __init__.py
-│   │   ├── enhanced_pipeline.py            # Complete pipeline
+│   │   ├── enhanced_pipeline.py     ad       # Complete pipeline
 │   │   ├── base_pipeline.py                # Base pipeline class
 │   │   ├── visualization.py                # Result visualization
 │   │   └── config.py                       # Pipeline configuration
