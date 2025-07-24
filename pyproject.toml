@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "person-search"
+version = "0.1.0"
+description = "Video person-search pipeline with perfect color detection, YOLO, and temporal stabilization."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.9"
+# Torch is tricky to pin cross‑platform; install it separately or via an extra.
+dependencies = [
+  "opencv-python>=4.7",
+  "numpy>=1.23",
+  "pandas>=1.5",
+  "scikit-learn>=1.2",
+  "timm>=0.9",
+  "ultralytics>=8.0.0",
+  "mediapipe>=0.10.0",
+  "torchvision>=0.15",   # optional if you install torch stack yourself
+  "typing-extensions>=4.5",
+]
+
+[project.optional-dependencies]
+# Allows: pip install .[dev]
+dev = [
+  "pytest",
+  "ruff",
+  "black",
+  "pre-commit",
+]
+
+[project.urls]
+homepage = "https://github.com/yourname/CCTV-Vision"
+issues = "https://github.com/yourname/CCTV-Vision/issues"
+
+[project.scripts]
+# Creates a console command: `person-search`
+person-search = "person_search.run:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
