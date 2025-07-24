@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: cctv_vision_app
+    # Map local folders so users can drop videos & get outputs back
+    volumes:
+      - ./videos:/videos
+      - ./outputs:/outputs
+    # Pass the GPU flag once
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    # Default command; users override with `docker compose run app --video …`
+    entrypoint: ["python", "-m", "person_search.run"]
+    stdin_open: true   # keep interactive prompts usable
+    tty: true
