@@ -109,6 +109,11 @@
             overflow: hidden;
             margin-bottom: 24px;
             background: #0a0a0a;
+            transition: transform 0.2s ease;
+        }
+
+        .featured-video:hover {
+            transform: scale(1.01);
         }
 
         .featured-video video {
@@ -118,33 +123,12 @@
             cursor: pointer;
         }
 
-        .featured-controls {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 12px;
+        .featured-video .fullscreen-btn {
+            opacity: 0;
         }
 
-        .control-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 16px;
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease;
-        }
-
-        .control-btn:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.05);
+        .featured-video:hover .fullscreen-btn {
+            opacity: 1;
         }
 
         .featured-info {
@@ -185,13 +169,26 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        .video-grid .video-card:last-child {
+        /* Portrait videos - first row */
+        .video-card:nth-child(1),
+        .video-card:nth-child(2) {
+            /* These stay in the 2-column grid */
+        }
+
+        /* Landscape videos - second row, 2 columns */
+        .video-card:nth-child(3),
+        .video-card:nth-child(4) {
+            /* These stay in the 2-column grid */
+        }
+
+        /* Last video - third row, centered */
+        .video-card:nth-child(5) {
             grid-column: 1 / -1;
-            max-width: 420px;
+            max-width: 450px;
             margin: 0 auto;
         }
 
@@ -209,6 +206,18 @@
             overflow: hidden;
             border-radius: 16px;
             margin-bottom: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .video-container:hover {
+            transform: scale(1.02);
+        }
+
+        /* Portrait mode for first two videos */
+        .video-card:nth-child(1) .video-container,
+        .video-card:nth-child(2) .video-container {
+            aspect-ratio: 9/16;
+            max-height: 450px;
         }
 
         .video-container video {
@@ -216,20 +225,17 @@
             height: 100%;
             object-fit: cover;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .video-controls {
+        /* Fullscreen button */
+        .fullscreen-btn {
             position: absolute;
-            bottom: 12px;
+            top: 12px;
             right: 12px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .small-control-btn {
             width: 36px;
             height: 36px;
-            border-radius: 50%;
+            border-radius: 8px;
             background: rgba(0, 0, 0, 0.7);
             border: none;
             color: white;
@@ -237,13 +243,43 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
             backdrop-filter: blur(10px);
             transition: all 0.2s ease;
+            opacity: 0;
         }
 
-        .small-control-btn:hover {
+        .video-container:hover .fullscreen-btn {
+            opacity: 1;
+        }
+
+        .fullscreen-btn:hover {
             background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.05);
+        }
+
+        /* Fullscreen styles */
+        .video-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999 !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            background: #000 !important;
+        }
+
+        .video-fullscreen video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+        }
+
+        .video-fullscreen .fullscreen-btn {
+            opacity: 1 !important;
+            background: rgba(0, 0, 0, 0.8) !important;
         }
 
         .video-info {
@@ -325,59 +361,6 @@
             color: #fff;
         }
 
-        /* Video States */
-        .video-playing {
-            opacity: 1;
-        }
-
-        .video-paused {
-            opacity: 0.9;
-        }
-
-        /* Play overlay for paused videos */
-        .play-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .video-container:hover .play-overlay {
-            opacity: 1;
-        }
-
-        .play-button {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: all;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .play-button:hover {
-            transform: scale(1.1);
-        }
-
-        .play-button::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 16px solid #000;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            margin-left: 4px;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -394,10 +377,10 @@
 
             .video-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 20px;
             }
 
-            .video-grid .video-card:last-child {
+            .video-grid .video-card:nth-child(5) {
                 grid-column: 1;
                 max-width: none;
             }
@@ -409,6 +392,25 @@
 
             .featured-video video {
                 height: 300px;
+            }
+
+            /* Adjust portrait videos on mobile */
+            .video-card:nth-child(1) .video-container,
+            .video-card:nth-child(2) .video-container {
+                max-height: 350px;
+                aspect-ratio: 9/16;
+            }
+
+            /* Fullscreen adjustments for mobile */
+            .video-fullscreen {
+                border-radius: 0 !important;
+            }
+            
+            .video-fullscreen .fullscreen-btn {
+                top: 20px !important;
+                right: 20px !important;
+                width: 44px !important;
+                height: 44px !important;
             }
         }
 
@@ -456,10 +458,7 @@
                     <source src="PeopleWalkingBlackHairBlackShirtMale.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
-                <div class="featured-controls">
-                    <button class="control-btn" id="featuredMute">🔇</button>
-                    <button class="control-btn" id="featuredPause">⏸</button>
-                </div>
+                <button class="fullscreen-btn" title="Fullscreen">⛶</button>
             </div>
             <div class="featured-info">
                 <p class="featured-prompt">System demonstrates multi-person detection and tracking with persistent IDs, analyzing hair color, clothing attributes, and gender classification for efficient person search across video footage.</p>
@@ -477,13 +476,7 @@
                             <source src="ManBlueShirt.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <div class="play-overlay">
-                            <div class="play-button"></div>
-                        </div>
-                        <div class="video-controls">
-                            <button class="small-control-btn mute-btn">🔇</button>
-                            <button class="small-control-btn pause-btn">⏸</button>
-                        </div>
+                        <button class="fullscreen-btn" title="Fullscreen">⛶</button>
                     </div>
                     <div class="video-info">
                         <p class="video-prompt">Individual person detection with clothing color analysis focusing on shirt color classification and gender identification for targeted person search queries.</p>
@@ -497,13 +490,7 @@
                             <source src="Female.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <div class="play-overlay">
-                            <div class="play-button"></div>
-                        </div>
-                        <div class="video-controls">
-                            <button class="small-control-btn mute-btn">🔇</button>
-                            <button class="small-control-btn pause-btn">⏸</button>
-                        </div>
+                        <button class="fullscreen-btn" title="Fullscreen">⛶</button>
                     </div>
                     <div class="video-info">
                         <p class="video-prompt">Gender classification system using EfficientNet-B4 model to identify male/female attributes along with hair and clothing color analysis for comprehensive person search.</p>
@@ -517,13 +504,7 @@
                             <source src="Rugby_Short_Black.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <div class="play-overlay">
-                            <div class="play-button"></div>
-                        </div>
-                        <div class="video-controls">
-                            <button class="small-control-btn mute-btn">🔇</button>
-                            <button class="small-control-btn pause-btn">⏸</button>
-                        </div>
+                        <button class="fullscreen-btn" title="Fullscreen">⛶</button>
                     </div>
                     <div class="video-info">
                         <p class="video-prompt">High-motion sports tracking demonstrating system performance during rapid movement with clothing color detection and persistent ID tracking in dynamic environments.</p>
@@ -537,13 +518,7 @@
                             <source src="Red_Guy_10.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <div class="play-overlay">
-                            <div class="play-button"></div>
-                        </div>
-                        <div class="video-controls">
-                            <button class="small-control-btn mute-btn">🔇</button>
-                            <button class="small-control-btn pause-btn">⏸</button>
-                        </div>
+                        <button class="fullscreen-btn" title="Fullscreen">⛶</button>
                     </div>
                     <div class="video-info">
                         <p class="video-prompt">Color-based person search demonstration using Lab color space and ΔE2000 distance calculation to accurately identify distinctive clothing colors like red shirts.</p>
@@ -557,13 +532,7 @@
                             <source src="BlackShirtMaleRugbyLong.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <div class="play-overlay">
-                            <div class="play-button"></div>
-                        </div>
-                        <div class="video-controls">
-                            <button class="small-control-btn mute-btn">🔇</button>
-                            <button class="small-control-btn pause-btn">⏸</button>
-                        </div>
+                        <button class="fullscreen-btn" title="Fullscreen">⛶</button>
                     </div>
                     <div class="video-info">
                         <p class="video-prompt">Extended duration tracking showing system's ability to maintain persistent IDs and analyze athlete attributes over longer sequences with MediaPipe pose detection.</p>
@@ -646,62 +615,69 @@
                 });
             });
 
-            // Featured video controls
-            const featuredVideo = document.getElementById('featuredVideo');
-            const featuredMute = document.getElementById('featuredMute');
-            const featuredPause = document.getElementById('featuredPause');
-
-            featuredMute.addEventListener('click', function() {
-                featuredVideo.muted = !featuredVideo.muted;
-                this.textContent = featuredVideo.muted ? '🔇' : '🔊';
+            // Fullscreen functionality
+            const fullscreenBtns = document.querySelectorAll('.fullscreen-btn');
+            
+            fullscreenBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const videoContainer = this.closest('.featured-video') || this.closest('.video-container');
+                    toggleFullscreen(videoContainer);
+                });
             });
 
-            featuredPause.addEventListener('click', function() {
-                if (featuredVideo.paused) {
-                    featuredVideo.play();
-                    this.textContent = '⏸';
+            function toggleFullscreen(container) {
+                if (container.classList.contains('video-fullscreen')) {
+                    exitFullscreen(container);
                 } else {
-                    featuredVideo.pause();
-                    this.textContent = '▶';
+                    enterFullscreen(container);
                 }
-            });
+            }
 
-            // Small video controls
-            document.querySelectorAll('.mute-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const video = this.closest('.video-container').querySelector('video');
-                    video.muted = !video.muted;
-                    this.textContent = video.muted ? '🔇' : '🔊';
-                });
-            });
+            function enterFullscreen(container) {
+                container.classList.add('video-fullscreen');
+                const fullscreenBtn = container.querySelector('.fullscreen-btn');
+                fullscreenBtn.innerHTML = '⛶';
+                fullscreenBtn.title = 'Exit Fullscreen';
+                
+                // Prevent body scroll
+                document.body.style.overflow = 'hidden';
+                
+                // Add escape key listener
+                document.addEventListener('keydown', handleEscape);
+                
+                // Add click outside to exit
+                container.addEventListener('click', handleClickOutside);
+            }
 
-            document.querySelectorAll('.pause-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const video = this.closest('.video-container').querySelector('video');
-                    if (video.paused) {
-                        video.play();
-                        this.textContent = '⏸';
-                    } else {
-                        video.pause();
-                        this.textContent = '▶';
+            function exitFullscreen(container) {
+                container.classList.remove('video-fullscreen');
+                const fullscreenBtn = container.querySelector('.fullscreen-btn');
+                fullscreenBtn.innerHTML = '⛶';
+                fullscreenBtn.title = 'Fullscreen';
+                
+                // Restore body scroll
+                document.body.style.overflow = '';
+                
+                // Remove listeners
+                document.removeEventListener('keydown', handleEscape);
+                container.removeEventListener('click', handleClickOutside);
+            }
+
+            function handleEscape(e) {
+                if (e.key === 'Escape') {
+                    const fullscreenContainer = document.querySelector('.video-fullscreen');
+                    if (fullscreenContainer) {
+                        exitFullscreen(fullscreenContainer);
                     }
-                });
-            });
+                }
+            }
 
-            // Play overlay functionality
-            document.querySelectorAll('.play-button').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const video = this.closest('.video-container').querySelector('video');
-                    if (video.paused) {
-                        video.play();
-                    } else {
-                        video.pause();
-                    }
-                });
-            });
+            function handleClickOutside(e) {
+                if (e.target.classList.contains('video-fullscreen')) {
+                    exitFullscreen(e.target);
+                }
+            }
 
             // Intersection Observer for performance
             const videoObserver = new IntersectionObserver((entries) => {
