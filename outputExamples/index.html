@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCTV-Vision | Computer Vision for Surveillance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #2a2a2a;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .github-link:hover {
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .feature-badges {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .badge {
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: #888;
+            font-weight: 400;
+        }
+
+        /* Featured Video Section */
+        .featured-section {
+            margin-bottom: 80px;
+        }
+
+        .featured-video {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: #0a0a0a;
+        }
+
+        .featured-video video {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .featured-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.05);
+        }
+
+        .featured-info {
+            text-align: center;
+        }
+
+        .featured-prompt {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-weight: 400;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .featured-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* Video Grid Section */
+        .video-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .video-grid .video-card:last-child {
+            grid-column: 1 / -1;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .video-card {
+            background: transparent;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .video-container {
+            position: relative;
+            background: #0a0a0a;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .small-control-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+
+        .small-control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .video-info {
+            padding: 0;
+        }
+
+        .video-prompt {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        /* Performance Section */
+        .performance-section {
+            background: transparent;
+            border-radius: 0;
+            padding: 40px 0;
+            margin-bottom: 60px;
+        }
+
+        .performance-title {
+            font-size: 24px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 32px;
+            color: #ccc;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #888;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+        /* Video States */
+        .video-playing {
+            opacity: 1;
+        }
+
+        .video-paused {
+            opacity: 0.9;
+        }
+
+        /* Play overlay for paused videos */
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .video-container:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 16px solid #000;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            margin-left: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .video-grid .video-card:last-child {
+                grid-column: 1;
+                max-width: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+
+            .featured-video video {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-container">
+                <a href="https://github.com/glenngriggs/CCTV-Vision" class="github-link">
+                    <span>View on GitHub</span>
+                    <span>↗</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>CCTV-Vision</h1>
+            <p>Video Person Search System - Search hours of footage by appearance instead of scrubbing frame-by-frame. Advanced YOLO-v8 detection with custom trained EfficientNet-B4 classification for gender, shirt color, hair color using Optuna optimization.</p>
+            
+            <div class="feature-badges">
+                <span class="badge">Person Detection & Tracking</span>
+                <span class="badge">Attribute Classification</span>
+                <span class="badge">Query Engine</span>
+            </div>
+        </header>
+
+        <!-- Featured Video Section -->
+        <section class="featured-section">
+            <div class="featured-video">
+                <video id="featuredVideo" autoplay muted loop>
+                    <source src="PeopleWalkingBlackHairBlackShirtMale.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="featured-controls">
+                    <button class="control-btn" id="featuredMute">🔇</button>
+                    <button class="control-btn" id="featuredPause">⏸</button>
+                </div>
+            </div>
+            <div class="featured-info">
+                <p class="featured-prompt">System demonstrates multi-person detection and tracking with persistent IDs, analyzing hair color, clothing attributes, and gender classification for efficient person search across video footage.</p>
+                <h3 class="featured-title">Multi-Person Attribute Analysis & Search</h3>
+            </div>
+        </section>
+
+        <!-- Additional Demonstrations -->
+        <section class="video-section">
+            <h2 class="section-title">Additional Demonstrations</h2>
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-container">
+                        <video autoplay muted loop>
+                            <source src="ManBlueShirt.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-overlay">
+                            <div class="play-button"></div>
+                        </div>
+                        <div class="video-controls">
+                            <button class="small-control-btn mute-btn">🔇</button>
+                            <button class="small-control-btn pause-btn">⏸</button>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <p class="video-prompt">Individual person detection with clothing color analysis focusing on shirt color classification and gender identification for targeted person search queries.</p>
+                        <h3 class="video-title">Single Person Attribute Classification</h3>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <video autoplay muted loop>
+                            <source src="Female.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-overlay">
+                            <div class="play-button"></div>
+                        </div>
+                        <div class="video-controls">
+                            <button class="small-control-btn mute-btn">🔇</button>
+                            <button class="small-control-btn pause-btn">⏸</button>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <p class="video-prompt">Gender classification system using EfficientNet-B4 model to identify male/female attributes along with hair and clothing color analysis for comprehensive person search.</p>
+                        <h3 class="video-title">Gender & Attribute Classification</h3>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <video autoplay muted loop>
+                            <source src="Rugby_Short_Black.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-overlay">
+                            <div class="play-button"></div>
+                        </div>
+                        <div class="video-controls">
+                            <button class="small-control-btn mute-btn">🔇</button>
+                            <button class="small-control-btn pause-btn">⏸</button>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <p class="video-prompt">High-motion sports tracking demonstrating system performance during rapid movement with clothing color detection and persistent ID tracking in dynamic environments.</p>
+                        <h3 class="video-title">Dynamic Movement Tracking</h3>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <video autoplay muted loop>
+                            <source src="Red_Guy_10.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-overlay">
+                            <div class="play-button"></div>
+                        </div>
+                        <div class="video-controls">
+                            <button class="small-control-btn mute-btn">🔇</button>
+                            <button class="small-control-btn pause-btn">⏸</button>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <p class="video-prompt">Color-based person search demonstration using Lab color space and ΔE2000 distance calculation to accurately identify distinctive clothing colors like red shirts.</p>
+                        <h3 class="video-title">Color-Based Person Search</h3>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-container">
+                        <video autoplay muted loop>
+                            <source src="BlackShirtMaleRugbyLong.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-overlay">
+                            <div class="play-button"></div>
+                        </div>
+                        <div class="video-controls">
+                            <button class="small-control-btn mute-btn">🔇</button>
+                            <button class="small-control-btn pause-btn">⏸</button>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <p class="video-prompt">Extended duration tracking showing system's ability to maintain persistent IDs and analyze athlete attributes over longer sequences with MediaPipe pose detection.</p>
+                        <h3 class="video-title">Extended Duration Analysis</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="performance-section">
+            <h2 class="performance-title">Real-World Performance</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">95.25%</div>
+                    <div class="stat-label">Detection Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">93.20%</div>
+                    <div class="stat-label">Attribute Classification</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">8-15</div>
+                    <div class="stat-label">FPS Processing</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">ΔE2000</div>
+                    <div class="stat-label">Color Distance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">EfficientNet-B4</div>
+                    <div class="stat-label">Neural Backbone</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">PA-100K & PETA</div>
+                    <div class="stat-label">Training Datasets</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Optuna</div>
+                    <div class="stat-label">Hyperparameter Tuning</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">+22pp</div>
+                    <div class="stat-label">Above Baseline</div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>
+                <a href="https://github.com/glenngriggs/CCTV-Vision">Open Source</a> • 
+                <a href="#">Documentation</a> • 
+                <a href="#">MIT License</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize all videos
+        document.addEventListener('DOMContentLoaded', function() {
+            const allVideos = document.querySelectorAll('video');
+            
+            // Set up autoplay and muting for all videos
+            allVideos.forEach(video => {
+                video.muted = true;
+                video.loop = true;
+                video.autoplay = true;
+                
+                // Ensure videos start playing
+                video.play().catch(e => {
+                    console.log('Autoplay prevented:', e);
+                });
+                
+                // Add click to play/pause
+                video.addEventListener('click', function() {
+                    if (this.paused) {
+                        this.play();
+                    } else {
+                        this.pause();
+                    }
+                });
+            });
+
+            // Featured video controls
+            const featuredVideo = document.getElementById('featuredVideo');
+            const featuredMute = document.getElementById('featuredMute');
+            const featuredPause = document.getElementById('featuredPause');
+
+            featuredMute.addEventListener('click', function() {
+                featuredVideo.muted = !featuredVideo.muted;
+                this.textContent = featuredVideo.muted ? '🔇' : '🔊';
+            });
+
+            featuredPause.addEventListener('click', function() {
+                if (featuredVideo.paused) {
+                    featuredVideo.play();
+                    this.textContent = '⏸';
+                } else {
+                    featuredVideo.pause();
+                    this.textContent = '▶';
+                }
+            });
+
+            // Small video controls
+            document.querySelectorAll('.mute-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const video = this.closest('.video-container').querySelector('video');
+                    video.muted = !video.muted;
+                    this.textContent = video.muted ? '🔇' : '🔊';
+                });
+            });
+
+            document.querySelectorAll('.pause-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const video = this.closest('.video-container').querySelector('video');
+                    if (video.paused) {
+                        video.play();
+                        this.textContent = '⏸';
+                    } else {
+                        video.pause();
+                        this.textContent = '▶';
+                    }
+                });
+            });
+
+            // Play overlay functionality
+            document.querySelectorAll('.play-button').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const video = this.closest('.video-container').querySelector('video');
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            });
+
+            // Intersection Observer for performance
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        video.play().catch(e => console.log('Play failed:', e));
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            // Observe all videos except the featured one
+            document.querySelectorAll('.video-grid video').forEach(video => {
+                videoObserver.observe(video);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ENHANCED VIDEO PERSON SEARCH SYSTEM V2.4 - COMPLETE INTEGRATION
+VIDEO PERSON SEARCH SYSTEM
 BY Glenn Griggs, Shubhanshu Pokharel, and Lucas Morris
 """
 
@@ -31,23 +31,33 @@ from ultralytics import YOLO
 import mediapipe as mp
 from scipy.optimize import linear_sum_assignment
 
-# Enhanced color science imports
+# Color science imports
 from skimage import color
 from skimage.color import deltaE_ciede2000
 
 warnings.filterwarnings('ignore')
 
-print("ENHANCED VIDEO PERSON SEARCH SYSTEM V2.4 - COMPLETE INTEGRATION")
+print("VIDEO PERSON SEARCH SYSTEM")
 print("="*80)
-print("Enhanced IoU-based tracking (eliminates ID switching)")
-print("Safe model loading with validation (prevents corruption)")
+print("IoU-based tracking")
+print("Safe model loading with validation")
 print("Smart region extraction with pose detection")
-print("All V2.3 color science improvements")
-print("Expected 15-25% overall accuracy improvement")
+print("Color science improvements")
 print("="*80)
 
+# Directory structure setup
+try:
+    # Try to get the file path (works in .py scripts)
+    BASE_DIR = Path(__file__).parent
+except NameError:
+    # Fallback for Jupyter notebooks/IPython
+    import os
+    BASE_DIR = Path(os.getcwd())
+MODELS_DIR = BASE_DIR / "models"
+VIDEOS_DIR = BASE_DIR / "videos"
+
 # Model configuration
-MODEL_PATH = "ULTIMATE_model_score_0.9398_20250716_110939.pt"
+MODEL_PATH = MODELS_DIR / "ULTIMATE_model_score_0.9398_20250716_110939.pt"
 MANDATORY_MODEL_LOADING = True
 
 # HEAD ALIASES for backward compatibility
@@ -79,11 +89,11 @@ def discover_heads_from_checkpoint(state_dict: Dict[str, torch.Tensor]) -> Dict[
 
     return discovered_heads
 
-# Enhanced Tracker V2.4 - IoU-based with motion prediction
+# Tracker with IoU-based motion prediction
 
 @dataclass
 class TrackState:
-    """Enhanced track state with motion prediction"""
+    """Track state with motion prediction"""
     track_id: int
     attributes: Dict[str, Any]
     last_update_frame: int
@@ -144,7 +154,7 @@ def calculate_iou(bbox1: Tuple[int, int, int, int], bbox2: Tuple[int, int, int, 
     return intersection / union
 
 class EnhancedTracker:
-    """Enhanced tracker with IoU-based Hungarian assignment and motion prediction"""
+    """Tracker with IoU-based Hungarian assignment and motion prediction"""
 
     def __init__(self,
                  max_disappeared: int = 30,
@@ -171,7 +181,7 @@ class EnhancedTracker:
         }
 
         if self.verbose:
-            print("Enhanced IoU-based tracker initialized")
+            print("IoU-based tracker initialized")
             print(f"   IoU threshold: {iou_threshold}")
             print(f"   Min hits: {min_hits}")
             print(f"   Max age: {max_age}")
@@ -335,7 +345,7 @@ class EnhancedTracker:
             'tracks_deleted': self.stats['tracks_deleted']
         }
 
-# Smart Region Extractor V2.4 - Pose-based with anatomical priors
+# Smart Region Extractor with pose-based anatomical priors
 
 class SmartRegionExtractor:
     """Smart region extractor with body part segmentation and anatomical priors"""
@@ -707,7 +717,7 @@ class SmartRegionExtractor:
             'pose_success_rate': self.stats['pose_extractions'] / max(self.stats['successful_extractions'], 1)
         }
 
-# Safe Model Loader V2.4 - Validation and critical layer checks
+# Safe Model Loader with validation and critical layer checks
 
 class SafeModelLoader:
     """Safe model loader with critical layer validation and proper error handling"""
@@ -1260,10 +1270,10 @@ class SafeModelLoader:
             'trainable_parameters': sum(p.numel() for p in self.model.parameters() if p.requires_grad)
         }
 
-# Enhanced Color Analyzer V2.4 - Lab implementation
+# Color Analyzer with Lab implementation
 
 class EnhancedColorAnalyzer:
-    """Enhanced color analyzer V2.4 with Lab + DeltaE2000 implementation"""
+    """Color analyzer with Lab + DeltaE2000 implementation"""
 
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
@@ -1278,12 +1288,12 @@ class EnhancedColorAnalyzer:
         self.white_balance_gains = None
         self.calibration_sample_count = 0
 
-        # Enhanced clustering parameters
+        # Clustering parameters
         self.adaptive_clustering = True
         self.brightness_normalization = True
 
         if self.verbose:
-            print("Enhanced Color Analyzer V2.4 loaded")
+            print("Color Analyzer loaded")
 
     def _define_lab_color_centers_fixed(self):
         """Lab color centers"""
@@ -1395,7 +1405,7 @@ class EnhancedColorAnalyzer:
                 print(f"White balance calibration failed: {e}")
 
     def extract_dominant_colors_enhanced(self, region: np.ndarray) -> List[Tuple[int, int, int]]:
-        """Enhanced dominant color extraction with adaptive K-means"""
+        """Dominant color extraction with adaptive K-means"""
         if region.size == 0:
             return [(128, 128, 128)]
 
@@ -1404,7 +1414,7 @@ class EnhancedColorAnalyzer:
             if self.calibration_sample_count < 3:
                 self.calibrate_white_balance(region)
 
-            # Apply enhanced color correction
+            # Apply color correction
             corrected = self.apply_enhanced_color_correction(region)
 
             # Resize for efficiency
@@ -1421,7 +1431,7 @@ class EnhancedColorAnalyzer:
             pixels_bgr = corrected.reshape(-1, 3)
             pixels_hsv = hsv.reshape(-1, 3)
 
-            # Enhanced color filtering
+            # Color filtering
             valid_mask = self._apply_enhanced_color_filter(pixels_hsv)
 
             if valid_mask.sum() < 50:
@@ -1472,7 +1482,7 @@ class EnhancedColorAnalyzer:
 
         except Exception as e:
             if self.verbose:
-                print(f"Enhanced color extraction failed: {e}")
+                print(f"Color extraction failed: {e}")
             try:
                 mean_color = tuple(map(int, np.clip(region.reshape(-1, 3).mean(axis=0), 0, 255)))
                 return [mean_color]
@@ -1480,7 +1490,7 @@ class EnhancedColorAnalyzer:
                 return [(128, 128, 128)]
 
     def apply_enhanced_color_correction(self, image: np.ndarray, enable_wb: bool = True) -> np.ndarray:
-        """Enhanced color correction"""
+        """Color correction"""
         try:
             corrected = image.copy()
             if enable_wb and self.white_balance_gains is not None:
@@ -1500,7 +1510,7 @@ class EnhancedColorAnalyzer:
             return image
 
     def _clahe_lab_enhanced(self, image: np.ndarray) -> np.ndarray:
-        """Enhanced CLAHE in LAB space"""
+        """CLAHE in LAB space"""
         try:
             lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
             l, a, b = cv2.split(lab)
@@ -1526,7 +1536,7 @@ class EnhancedColorAnalyzer:
             return image
 
     def _apply_enhanced_color_filter(self, pixels_hsv: np.ndarray) -> np.ndarray:
-        """Enhanced color filtering"""
+        """Color filtering"""
         h_norm = pixels_hsv[:, 0] * 2
         s_norm = pixels_hsv[:, 1] / 255.0
         v_norm = pixels_hsv[:, 2] / 255.0
@@ -1549,7 +1559,7 @@ class EnhancedColorAnalyzer:
         return n_clusters
 
     def classify_color_enhanced(self, rgb_color: Tuple[int, int, int], attribute: str) -> Tuple[str, float]:
-        """EXCELLENT FIXED color classification using CIE Lab + DeltaE2000"""
+        """Color classification using CIE Lab + DeltaE2000"""
         if attribute not in self.lab_color_centers:
             return 'unknown', 0.0
 
@@ -1585,7 +1595,7 @@ class EnhancedColorAnalyzer:
             special_conf = self._calculate_enhanced_special_confidence_fixed(rgb_color, hsv_pixel, lab_pixel, color_name, attribute)
             confidences.append(special_conf)
 
-            # Smart combination with enhanced weighting
+            # Smart combination with weighting
             max_conf = max(confidences)
 
             # Bonus for multiple method agreement
@@ -1700,7 +1710,7 @@ class EnhancedColorAnalyzer:
     def _calculate_enhanced_special_confidence_fixed(self, rgb_color: Tuple[int, int, int],
                                                    hsv_pixel: np.ndarray, lab_pixel: np.ndarray,
                                                    color_name: str, attribute: str) -> float:
-        """Enhanced special confidence with Lab-aware processing"""
+        """Special confidence with Lab-aware processing"""
         r, g, b = rgb_color
         h, s, v = hsv_pixel
         l_lab, a_lab, b_lab = lab_pixel
@@ -1742,14 +1752,14 @@ class EnhancedColorAnalyzer:
                     confidence = max(confidence, green_strength * 0.8)
 
             elif color_name == 'white':
-                # Enhanced white detection
+                # White detection
                 if l_lab > 80 and abs(a_lab) < 5 and abs(b_lab) < 5:
                     lightness_score = min(l_lab / 95.0, 1.0)
                     achromatic_score = 1.0 - (abs(a_lab) + abs(b_lab)) / 10.0
                     confidence = max(confidence, lightness_score * achromatic_score)
 
             elif color_name == 'black':
-                # Enhanced black detection
+                # Black detection
                 if l_lab < 30 and abs(a_lab) < 10 and abs(b_lab) < 10:
                     darkness_score = 1.0 - (l_lab / 35.0)
                     achromatic_score = 1.0 - (abs(a_lab) + abs(b_lab)) / 20.0
@@ -1761,7 +1771,7 @@ class EnhancedColorAnalyzer:
             elif color_name == 'brown' and 10 <= h <= 40 and a_lab > 5:
                 confidence = max(confidence, min(a_lab / 30.0, 0.9))
             elif color_name == 'blonde':
-                # Enhanced blonde detection
+                # Blonde detection
                 if l_lab > 60 and b_lab > 8:
                     lightness_score = min((l_lab - 50) / 40.0, 1.0)
                     yellow_chroma = min(b_lab / 25.0, 1.0)
@@ -1774,14 +1784,14 @@ class EnhancedColorAnalyzer:
         return min(confidence, 1.0)
 
     def analyze_region_enhanced(self, region: np.ndarray, attribute: str) -> Dict[str, Any]:
-        """Enhanced region analysis with all V2.4 improvements"""
+        """Region analysis with all improvements"""
         if region.size == 0:
             return {'color': 'unknown', 'confidence': 0.0, 'rgb': (128, 128, 128)}
 
-        # Extract dominant colors with enhanced algorithm
+        # Extract dominant colors with algorithm
         dominant_colors = self.extract_dominant_colors_enhanced(region)
 
-        # Analyze each color with enhanced classification
+        # Analyze each color with classification
         color_results = []
         for rgb_color in dominant_colors:
             color_name, confidence = self.classify_color_enhanced(rgb_color, attribute)
@@ -1799,13 +1809,13 @@ class EnhancedColorAnalyzer:
             'confidence': best_result['confidence'],
             'rgb': best_result['rgb'],
             'all_colors': color_results,
-            'method': 'enhanced_v2.4_complete_integration'
+            'method': 'color_analysis'
         }
 
-# Enhanced Hybrid Detector V2.4 - Integration with all improvements
+# Hybrid Detector with integration of all improvements
 
 class EnhancedHybridDetector:
-    """Enhanced hybrid detector V2.4 with all improvements integrated"""
+    """Hybrid detector with all improvements integrated"""
 
     def __init__(self, model_path: str, verbose: bool = False, use_pose: bool = True):
         self.color_analyzer = EnhancedColorAnalyzer(verbose=verbose)
@@ -1822,13 +1832,13 @@ class EnhancedHybridDetector:
         }
 
         if self.verbose:
-            print("Enhanced Hybrid Detector V2.4 ready with all improvements")
+            print("Hybrid Detector ready with all improvements")
             print(f"   Safe model loading: {'READY' if self.model_loader.is_ready() else 'NOT READY'}")
             print(f"   Smart region extraction: READY")
-            print(f"   Enhanced color analysis: READY")
+            print(f"   Color analysis: READY")
 
     def detect_attributes_enhanced(self, person_crop: np.ndarray, track_id: int = None) -> Dict[str, Any]:
-        """Enhanced attribute detection with V2.4 complete integration"""
+        """Attribute detection with integration"""
         results = {
             'gender': {'class': 'unknown', 'confidence': 0.0, 'method': 'none'},
             'hair_color': {'color': 'unknown', 'confidence': 0.0, 'method': 'none'},
@@ -1855,7 +1865,7 @@ class EnhancedHybridDetector:
             # Step 2: Smart region extraction with pose detection
             regions = self.region_extractor.extract_regions_smart(person_crop)
 
-            # Step 3: Enhanced color analysis with excellent Lab implementation
+            # Step 3: Color analysis 
 
             # Hair color detection
             if regions['hair'] is not None:
@@ -1864,7 +1874,7 @@ class EnhancedHybridDetector:
                     results['hair_color'] = {
                         'color': hair_result['color'],
                         'confidence': hair_result['confidence'],
-                        'method': 'enhanced_v2.4_smart_regions_lab_analysis'
+                        'method': 'smart_regions_lab_analysis'
                     }
                     self.stats['color_successes'] += 1
 
@@ -1875,7 +1885,7 @@ class EnhancedHybridDetector:
                     results['shirt_color'] = {
                         'color': shirt_result['color'],
                         'confidence': shirt_result['confidence'],
-                        'method': 'enhanced_v2.4_smart_regions_lab_analysis'
+                        'method': 'smart_regions_lab_analysis'
                     }
                     self.stats['color_successes'] += 1
 
@@ -1903,7 +1913,7 @@ class EnhancedHybridDetector:
 
         except Exception as e:
             if self.verbose:
-                print(f"Enhanced detection failed: {e}")
+                print(f"Detection failed: {e}")
 
         return results
 
@@ -1917,10 +1927,10 @@ class EnhancedHybridDetector:
             'fusion_improvement_rate': self.stats['fusion_improvements'] / total
         }
 
-# Complete Interactive Query Builder V2.4 - Clean UX
+# Interactive Query Builder with clean UX
 
 class CompleteQueryBuilder:
-    """Complete interactive query builder with clean UX"""
+    """Interactive query builder with clean UX"""
 
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
@@ -1931,16 +1941,15 @@ class CompleteQueryBuilder:
         }
 
         if self.verbose:
-            print("Complete Query Builder ready")
+            print("Query Builder ready")
 
     def build_query_interactive(self) -> Dict[str, str]:
         """Interactive query builder"""
-        print("\nENHANCED INTERACTIVE QUERY BUILDER V2.4")
+        print("\nINTERACTIVE QUERY BUILDER")
         print("="*60)
         print("Select what you're looking for:")
         print("Choose N/A for any attribute to match ALL values for that attribute")
         print("Press Enter for quick N/A selection")
-        print("V2.4: Complete integration with all improvements")
 
         query = {}
 
@@ -1954,34 +1963,18 @@ class CompleteQueryBuilder:
             query['gender'] = gender_choice
 
         # Hair color selection
-        print(f"\nHAIR COLOR (Smart regions + Enhanced Lab analysis):")
+        print(f"\nHAIR COLOR (Smart regions + Lab analysis):")
         for i, option in enumerate(self.available_options['hair_color'], 1):
-            special_note = ""
-            if option == "brown":
-                special_note = " (ENHANCED DeltaE2000 perceptual matching)"
-            elif option == "blonde":
-                special_note = " (ENHANCED Lab L>60 + b*>8 detection)"
-            print(f"  {i}. {option}{special_note}")
+            print(f"  {i}. {option}")
 
         hair_choice = self._get_user_choice("hair color", 6)
         if hair_choice != 'N/A':
             query['hair_color'] = hair_choice
 
         # Shirt color selection
-        print(f"\nSHIRT COLOR (Smart pose regions + Enhanced clustering):")
+        print(f"\nSHIRT COLOR (Smart pose regions + clustering):")
         for i, option in enumerate(self.available_options['shirt_color'], 1):
-            special_note = ""
-            if option == "blue":
-                special_note = " (ENHANCED Lab b*<-10 detection)"
-            elif option == "black":
-                special_note = " (ENHANCED Lab L<30 detection)"
-            elif option == "red":
-                special_note = " (ENHANCED Lab a*>20 detection)"
-            elif option == "green":
-                special_note = " (ENHANCED Lab a*<-15 detection)"
-            elif option == "white":
-                special_note = " (ENHANCED Lab L>80 detection)"
-            print(f"  {i}. {option}{special_note}")
+            print(f"  {i}. {option}")
 
         shirt_choice = self._get_user_choice("shirt color", 6)
         if shirt_choice != 'N/A':
@@ -2016,7 +2009,7 @@ class CompleteQueryBuilder:
 
     def _display_query_summary(self, query: Dict[str, str]):
         """Display query summary"""
-        print(f"\nFINAL SEARCH QUERY (V2.4 COMPLETE INTEGRATION)")
+        print(f"\nFINAL SEARCH QUERY")
         print("="*60)
 
         if not query:
@@ -2037,16 +2030,16 @@ class CompleteQueryBuilder:
                 for attr in flexible_attrs:
                     print(f"   {attr}: Will match ANY value")
 
-        print(f"\nV2.4 COMPLETE INTEGRATION FEATURES:")
-        print(f"   Enhanced IoU-based tracking: Eliminates ID switching")
-        print(f"   Safe model loading: Prevents silent corruption")
-        print(f"   Smart region extraction: Pose-based anatomical regions")
-        print(f"   Enhanced Lab color analysis: DeltaE2000 implementation")
+        print(f"\nSYSTEM FEATURES:")
+        print(f"   IoU-based tracking")
+        print(f"   Safe model loading")
+        print(f"   Smart pose-based regions")
+        print(f"   Lab color analysis")
 
-# Enhanced Video Processor V2.4 - Complete integration
+# Video Processor with integration
 
 class EnhancedVideoProcessor:
-    """Enhanced video processor V2.4 with complete integration of all improvements"""
+    """Video processor with integration of all improvements"""
 
     def __init__(self,
                  model_path: str = MODEL_PATH,
@@ -2056,11 +2049,11 @@ class EnhancedVideoProcessor:
                  attribute_update_interval: int = 5,
                  draw_hud: bool = True):
 
-        self.yolo = YOLO('yolov8n.pt')
+        self.yolo = YOLO(str(MODELS_DIR / 'yolov8n.pt'))
         self.detector = EnhancedHybridDetector(model_path, verbose=verbose, use_pose=use_pose)
         self.query_builder = CompleteQueryBuilder(verbose=verbose)
 
-        # Use Enhanced Tracker instead of SimpleTracker
+        # Use Tracker
         self.tracker = EnhancedTracker(
             max_disappeared=30,
             min_hits=3,
@@ -2079,7 +2072,7 @@ class EnhancedVideoProcessor:
         self.attribute_update_interval = attribute_update_interval
         self.bbox_iou_threshold = bbox_iou_threshold
 
-        # Enhanced performance tracking
+        # Performance tracking
         self.stats = {
             'frames_processed': 0,
             'unique_tracks_seen': set(),
@@ -2087,29 +2080,29 @@ class EnhancedVideoProcessor:
             'matches_found': 0,
             'processing_time': 0.0,
             'attribute_updates': 0,
-            'v2_4_improvements': 0,
-            'enhanced_tracking_benefits': 0,
+            'improvements': 0,
+            'tracking_benefits': 0,
             'smart_region_benefits': 0,
             'safe_model_benefits': 0
         }
 
         if self.verbose:
-            print("Enhanced Video Processor V2.4 ready with complete integration")
-            print("   Enhanced IoU-based tracking: ENABLED")
+            print("Video Processor ready with integration")
+            print("   IoU-based tracking: ENABLED")
             print("   Safe model loading with validation: ENABLED")
             print("   Smart region extraction with pose: ENABLED")
-            print("   Enhanced Lab color analysis: ENABLED")
+            print("   Lab color analysis: ENABLED")
 
     def process_video_enhanced(self,
                              video_path: str,
                              query: Dict[str, str] = None,
                              output_path: str = None,
                              show_progress: bool = True) -> Dict[str, Any]:
-        """Enhanced video processing with complete V2.4 integration"""
+        """Video processing with integration"""
         start_time = time.time()
 
         if self.verbose:
-            print(f"\nENHANCED VIDEO PROCESSING V2.4 - COMPLETE INTEGRATION")
+            print(f"\nVIDEO PROCESSING")
             print("="*80)
             print(f"Input: {video_path}")
 
@@ -2124,7 +2117,7 @@ class EnhancedVideoProcessor:
             query = self.query_builder.build_query_interactive()
 
         if self.verbose:
-            print(f"\nPROCESSING WITH COMPLETE V2.4 SYSTEM:")
+            print(f"\nPROCESSING:")
             if not query:
                 print("  Looking for: ALL PEOPLE (maximum flexibility)")
             else:
@@ -2145,7 +2138,6 @@ class EnhancedVideoProcessor:
         if self.verbose:
             print(f"Video: {width}x{height}, {fps} FPS, {total_frames} frames")
             print(f"Duration: {total_frames/fps:.1f} seconds")
-            print(f"V2.4: Complete integration with all improvements")
 
         # Setup output
         writer = None
@@ -2165,7 +2157,7 @@ class EnhancedVideoProcessor:
         times_for_eta = []
 
         if self.verbose:
-            print(f"\nStarting V2.4 complete integration processing...")
+            print(f"\nStarting processing...")
 
         try:
             while True:
@@ -2178,12 +2170,12 @@ class EnhancedVideoProcessor:
                 # Detect persons with YOLO
                 persons = self._detect_persons_optimized(frame)
 
-                # ENHANCED TRACKING: Update tracker with IoU-based assignment
+                # Update tracker with IoU-based assignment
                 tracked_persons = self.tracker.update(persons)
 
-                # Track benefits of enhanced tracking
+                # Track benefits of tracking
                 if len(tracked_persons) > 1:
-                    self.stats['enhanced_tracking_benefits'] += 1
+                    self.stats['tracking_benefits'] += 1
 
                 # Track unique track IDs
                 unique_tracks_this_frame = set(person.get('track_id', -1) for person in tracked_persons)
@@ -2208,26 +2200,26 @@ class EnhancedVideoProcessor:
                         if needs_update:
                             tracks_to_update.append((track_id, person))
 
-                # V2.4 COMPLETE INTEGRATION: Enhanced attribute detection
+                # Attribute detection
                 if tracks_to_update:
                     crops_to_process = [person['crop'] for _, person in tracks_to_update]
                     track_ids_to_process = [track_id for track_id, _ in tracks_to_update]
 
-                    # Use SAFE model loading for batch inference
+                    # Use safe model loading for batch inference
                     if self.detector.model_loader.is_ready():
                         detections = self.detector.model_loader.predict_batch_cached(crops_to_process, track_ids_to_process)
                         self.stats['safe_model_benefits'] += len(detections)
                     else:
                         detections = [self.detector.model_loader._get_default_result() for _ in crops_to_process]
 
-                    # Update track states with V2.4 enhanced fusion
+                    # Update track states with fusion
                     for (track_id, person), detection in zip(tracks_to_update, detections):
-                        # SMART REGION EXTRACTION + ENHANCED COLOR ANALYSIS
+                        # Smart region extraction + color analysis
                         try:
                             regions = self.detector.region_extractor.extract_regions_smart(person['crop'])
                             self.stats['smart_region_benefits'] += 1
 
-                            # Hair color fusion with enhanced analyzer
+                            # Hair color fusion
                             if regions['hair'] is not None:
                                 hair_result = self.detector.color_analyzer.analyze_region_enhanced(regions['hair'], 'hair_color')
                                 if (hair_result['confidence'] > 0.5 and
@@ -2235,11 +2227,11 @@ class EnhancedVideoProcessor:
                                     detection['hair_color'] = {
                                         'color': hair_result['color'],
                                         'confidence': hair_result['confidence'],
-                                        'method': 'enhanced_v2.4_complete_integration'
+                                        'method': 'integration'
                                     }
-                                    self.stats['v2_4_improvements'] += 1
+                                    self.stats['improvements'] += 1
 
-                            # Shirt color fusion with enhanced analyzer
+                            # Shirt color fusion
                             if regions['shirt'] is not None:
                                 shirt_result = self.detector.color_analyzer.analyze_region_enhanced(regions['shirt'], 'shirt_color')
                                 if (shirt_result['confidence'] > 0.5 and
@@ -2247,13 +2239,13 @@ class EnhancedVideoProcessor:
                                     detection['shirt_color'] = {
                                         'color': shirt_result['color'],
                                         'confidence': shirt_result['confidence'],
-                                        'method': 'enhanced_v2.4_complete_integration'
+                                        'method': 'integration'
                                     }
-                                    self.stats['v2_4_improvements'] += 1
+                                    self.stats['improvements'] += 1
 
                         except Exception as e:
                             if self.verbose:
-                                print(f"V2.4 enhanced fusion failed for track {track_id}: {e}")
+                                print(f"Fusion failed for track {track_id}: {e}")
 
                         # Update track state
                         if track_id in self.tracker.tracks:
@@ -2287,7 +2279,7 @@ class EnhancedVideoProcessor:
 
                 self.stats['matches_found'] += frame_matches
 
-                # Draw results with V2.4 integration indicators
+                # Draw results
                 self._draw_enhanced_results(frame, tracked_persons, query, matches)
 
                 # Write frame
@@ -2335,10 +2327,10 @@ class EnhancedVideoProcessor:
                         tracker_stats = self.tracker.get_performance_stats()
                         region_stats = self.detector.region_extractor.get_performance_stats()
 
-                        print(f"V2.4 Progress: {progress:.1f}% | Frame {frame_idx:,}/{total_frames:,} | ETA: {eta_str}")
-                        print(f"   Enhanced Tracking: {tracker_stats['active_tracks']} active, {tracker_stats['id_switches_prevented']} switches prevented")
+                        print(f"Progress: {progress:.1f}% | Frame {frame_idx:,}/{total_frames:,} | ETA: {eta_str}")
+                        print(f"   Tracking: {tracker_stats['active_tracks']} active, {tracker_stats['id_switches_prevented']} switches prevented")
                         print(f"   Smart Regions: {region_stats['pose_success_rate']:.1%} pose success")
-                        print(f"   V2.4 Improvements: {len(tracks_to_update)} processed | Matches: {frame_matches}")
+                        print(f"   Improvements: {len(tracks_to_update)} processed | Matches: {frame_matches}")
 
                     last_progress_update = frame_idx
 
@@ -2347,10 +2339,10 @@ class EnhancedVideoProcessor:
 
         except KeyboardInterrupt:
             if self.verbose:
-                print(f"\nV2.4 processing interrupted by user")
+                print(f"\nProcessing interrupted by user")
         except Exception as e:
             if self.verbose:
-                print(f"\nV2.4 processing error: {e}")
+                print(f"\nProcessing error: {e}")
             return {'success': False, 'error': str(e)}
         finally:
             cap.release()
@@ -2368,26 +2360,26 @@ class EnhancedVideoProcessor:
         # Results summary
         if self.verbose:
             print(f"\n" + "="*80)
-            print(f"V2.4 COMPLETE INTEGRATION PROCESSING FINISHED!")
+            print(f"PROCESSING FINISHED!")
             print(f"="*80)
             print(f"Total time: {self.stats['processing_time']:.1f} seconds")
-            print(f"V2.4 COMPLETE PERFORMANCE:")
+            print(f"PERFORMANCE:")
             print(f"   Frames processed: {self.stats['frames_processed']:,}")
             print(f"   Unique people tracked: {len(self.stats['unique_tracks_seen'])}")
-            print(f"   V2.4 improvements applied: {self.stats['v2_4_improvements']:,}")
+            print(f"   Improvements applied: {self.stats['improvements']:,}")
             print(f"   Attribute updates: {self.stats['attribute_updates']:,}")
             print(f"   Matches found: {self.stats['matches_found']:,}")
 
             processing_speed = self.stats['frames_processed'] / max(self.stats['processing_time'], 0.001)
-            improvement_rate = self.stats['v2_4_improvements'] / max(self.stats['attribute_updates'], 1)
+            improvement_rate = self.stats['improvements'] / max(self.stats['attribute_updates'], 1)
             match_rate = (len(self.stats['matched_track_ids']) / max(len(self.stats['unique_tracks_seen']), 1)) * 100
 
             print(f"   Processing speed: {processing_speed:.1f} FPS")
-            print(f"   V2.4 improvement rate: {improvement_rate:.1%}")
+            print(f"   Improvement rate: {improvement_rate:.1%}")
             print(f"   Match rate (unique): {match_rate:.1f}%")
 
             print(f"\nCOMPONENT PERFORMANCE:")
-            print(f"   Enhanced Tracking:")
+            print(f"   Tracking:")
             print(f"     - Assignment success: {tracker_performance['assignment_success_rate']:.1%}")
             print(f"     - ID switches prevented: {tracker_performance['id_switches_prevented']}")
             print(f"     - Active tracks: {tracker_performance['active_tracks']}")
@@ -2397,13 +2389,13 @@ class EnhancedVideoProcessor:
             print(f"     - Total extractions: {region_performance['successful_extractions']}")
             print(f"     - Skin removals: {region_performance['skin_removals']}")
 
-            print(f"   Enhanced Detection:")
+            print(f"   Detection:")
             print(f"     - Model success rate: {detector_performance['model_success_rate']:.1%}")
             print(f"     - Color success rate: {detector_performance['color_success_rate']:.1%}")
             print(f"     - Fusion improvements: {detector_performance['fusion_improvement_rate']:.1%}")
 
             if matches:
-                print(f"\nTOP MATCHES (V2.4 COMPLETE INTEGRATION):")
+                print(f"\nTOP MATCHES:")
                 for i, match in enumerate(matches[:10]):
                     det = match['detection']
                     print(f"  {i+1:2d}. Track {match['track_id']:,} | Frame {match['frame']:,} ({match['timestamp']:.1f}s) - Score: {match['score']:.3f}")
@@ -2431,7 +2423,7 @@ class EnhancedVideoProcessor:
             'total_people': len(self.stats['unique_tracks_seen']),
             'total_matched_people': len(self.stats['matched_track_ids']),
             'match_rate': match_rate,
-            'v2_4_improvements': self.stats['v2_4_improvements'],
+            'improvements': self.stats['improvements'],
             'component_performance': {
                 'tracker': tracker_performance,
                 'regions': region_performance,
@@ -2472,14 +2464,14 @@ class EnhancedVideoProcessor:
         return persons
 
     def _calculate_match_enhanced(self, detection: Dict, query: Dict) -> float:
-        """Enhanced match calculation with V2.4 method weighting"""
+        """Match calculation with method weighting"""
         if not query:
             return 1.0
 
         matches = 0.0
         total_weight = 0.0
 
-        # Enhanced weighted scoring (favor V2.4 complete integration methods)
+        # Weighted scoring
         weights = {
             'gender': 1.0,
             'hair_color': 1.0,
@@ -2489,13 +2481,13 @@ class EnhancedVideoProcessor:
         for attr, required in query.items():
             weight = weights.get(attr, 1.0)
 
-            # Bonus weight for V2.4 complete integration methods
+            # Bonus weight for integration methods
             detected = detection.get(attr, {})
             method = detected.get('method', '')
-            if 'v2.4_complete_integration' in method:
-                weight *= 1.3  # 30% bonus for complete integration methods
-            elif 'enhanced_v2.4' in method:
-                weight *= 1.2  # 20% bonus for enhanced methods
+            if 'integration' in method:
+                weight *= 1.3  # 30% bonus for integration methods
+            elif 'smart_regions' in method:
+                weight *= 1.2  # 20% bonus for smart methods
             elif 'safe_' in method:
                 weight *= 1.1  # 10% bonus for safe methods
 
@@ -2511,10 +2503,11 @@ class EnhancedVideoProcessor:
                     matches += detected['confidence'] * weight
 
         return matches / total_weight if total_weight > 0 else 1.0
+   
 
     def _draw_enhanced_results(self, frame: np.ndarray, tracked_persons: List[Dict],
                              query: Dict, all_matches: List[Dict]):
-        """Draw results with V2.4 complete integration indicators"""
+        """Draw results with integration indicators"""
         for person in tracked_persons:
             bbox = person['bbox']
             track_id = person['track_id']
@@ -2526,23 +2519,23 @@ class EnhancedVideoProcessor:
                 # Calculate match score
                 match_score = 0.0
                 is_match = False
-                has_v2_4_integration = False
+                has_integration = False
 
                 if cached_attributes:
                     match_score = self._calculate_match_enhanced(cached_attributes, query)
                     is_match = match_score >= 0.7
 
-                    # Check for V2.4 complete integration
+                    # Check for integration
                     for attr in ['hair_color', 'shirt_color']:
                         method = cached_attributes.get(attr, {}).get('method', '')
-                        if 'v2.4_complete_integration' in method:
-                            has_v2_4_integration = True
+                        if 'integration' in method:
+                            has_integration = True
                             break
 
-                # Enhanced color coding
+                # Color coding
                 if is_match:
-                    if has_v2_4_integration:
-                        color = (0, 255, 0)      # Bright green for V2.4 complete integration matches
+                    if has_integration:
+                        color = (0, 255, 0)      # Bright green for integration matches
                         thickness = 6
                     else:
                         color = (0, 200, 0)      # Regular green for normal matches
@@ -2557,9 +2550,9 @@ class EnhancedVideoProcessor:
                 # Draw bounding box
                 cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, thickness)
 
-                # Track ID and match score with V2.4 indicator
-                v2_4_indicator = " [V2.4]" if has_v2_4_integration else ""
-                track_text = f"ID:{track_id} Score:{match_score:.3f}{v2_4_indicator}"
+                # Track ID and match score with indicator
+                integration_indicator = " [I]" if has_integration else ""
+                track_text = f"ID:{track_id} Score:{match_score:.3f}{integration_indicator}"
                 cv2.putText(frame, track_text, (bbox[0], bbox[1] - 10),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
@@ -2578,14 +2571,14 @@ class EnhancedVideoProcessor:
 
                             attr_short = attr.split('_')[0]
 
-                            # V2.4 complete integration method indicator
+                            # Method indicator
                             method_indicator = ""
-                            if 'v2.4_complete_integration' in method:
-                                method_indicator = "[V2.4+]"  # Double checkmark for complete integration
-                            elif 'enhanced_v2.4' in method:
-                                method_indicator = "[V2.4]"   # Single checkmark for enhanced
+                            if 'integration' in method:
+                                method_indicator = "[I]"
+                            elif 'smart_regions' in method:
+                                method_indicator = "[S]"
                             elif 'safe_' in method:
-                                method_indicator = "[SAFE]"  # Shield for safe methods
+                                method_indicator = "[SAFE]"
                             elif 'trained_model' in method:
                                 method_indicator = "[MODEL]"
 
@@ -2604,11 +2597,11 @@ class EnhancedVideoProcessor:
                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, text_color, 1)
                             y_offset += 18
 
-        # Update query info display with V2.4 complete integration stats
+        # Update query info display
         self._draw_enhanced_query_info(frame, query, len(all_matches))
 
     def _draw_enhanced_query_info(self, frame: np.ndarray, query: Dict, total_matches: int):
-        """Draw enhanced query information with V2.4 complete integration stats"""
+        """Draw query information"""
         if not self.draw_hud:
             return
 
@@ -2619,29 +2612,29 @@ class EnhancedVideoProcessor:
 
         # Query display
         if not query:
-            query_text = "V2.4 COMPLETE INTEGRATION QUERY: ALL PEOPLE (maximum flexibility)"
+            query_text = "QUERY: ALL PEOPLE (maximum flexibility)"
         else:
             requirements = [f"{k.replace('_', ' ')}={v}" for k, v in query.items()]
-            query_text = f"V2.4 COMPLETE INTEGRATION QUERY: {', '.join(requirements)}"
+            query_text = f"QUERY: {', '.join(requirements)}"
 
         cv2.putText(frame, query_text, (15, 35),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
-        # V2.4 complete integration tracking statistics
+        # Tracking statistics
         active_tracks = len(self.tracker.tracks)
-        v2_4_improvements = self.stats.get('v2_4_improvements', 0)
+        improvements = self.stats.get('improvements', 0)
         tracker_performance = self.tracker.get_performance_stats()
 
-        track_stats = f"Active: {active_tracks} | V2.4 Integrated: {v2_4_improvements} | Matches: {total_matches}"
+        track_stats = f"Active: {active_tracks} | Integrated: {improvements} | Matches: {total_matches}"
         cv2.putText(frame, track_stats, (15, 60),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
-        # V2.4 Complete Integration info
-        enhancement_stats = f"Enhanced Tracking: {tracker_performance['id_switches_prevented']} switches prevented"
+        # System info
+        enhancement_stats = f"Tracking: {tracker_performance['id_switches_prevented']} switches prevented"
         cv2.putText(frame, enhancement_stats, (15, 85),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
-        integration_stats = f"Smart Regions + Safe Model + Enhanced Lab Analysis"
+        integration_stats = f"Smart Regions + Safe Model + Lab Analysis"
         cv2.putText(frame, integration_stats, (15, 110),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
@@ -2656,22 +2649,22 @@ class EnhancedVideoProcessor:
         cv2.putText(frame, model_text, (15, 160),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 255), 1)
 
-        # V2.4 Complete Integration legend
-        legend_text = "[MATCH]=Match [DIFF]=Mismatch [INFO]=N/A | [V2.4+]=Complete [V2.4]=Enhanced [SAFE]=Safe [MODEL]=Model"
+        # Legend
+        legend_text = "[MATCH]=Match [DIFF]=Mismatch [INFO]=N/A | [I]=Integration [S]=Smart [SAFE]=Safe [MODEL]=Model"
         cv2.putText(frame, legend_text, (15, 185),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (200, 200, 200), 1)
 
 # Testing and demo functions
 
-def test_complete_v2_4_integration(debug_mode: bool = False):
-    """Test the complete V2.4 integration improvements"""
+def test_integration(debug_mode: bool = False):
+    """Test the integration improvements"""
     if debug_mode:
-        print("TESTING COMPLETE V2.4 INTEGRATION")
+        print("TESTING INTEGRATION")
         print("="*60)
 
-    # Test 1: Enhanced Tracker
+    # Test 1: Tracker
     if debug_mode:
-        print("Step 1: Testing Enhanced IoU-based Tracker...")
+        print("Step 1: Testing IoU-based Tracker...")
     tracker = EnhancedTracker(verbose=debug_mode)
     test_detections = [
         {'bbox': (100, 100, 200, 300), 'confidence': 0.9, 'crop': np.zeros((200, 100, 3), dtype=np.uint8), 'area': 20000},
@@ -2695,11 +2688,11 @@ def test_complete_v2_4_integration(debug_mode: bool = False):
 
     if has_track_ids and len(tracked2) >= 1:
         if debug_mode:
-            print("Enhanced Tracker: SUCCESS - IoU-based assignment working")
+            print("Tracker: SUCCESS - IoU-based assignment working")
         tracker_passed = True
     else:
         if debug_mode:
-            print("Enhanced Tracker: FAILED")
+            print("Tracker: FAILED")
         tracker_passed = False
 
     # Test 2: Smart Region Extractor
@@ -2741,9 +2734,9 @@ def test_complete_v2_4_integration(debug_mode: bool = False):
             print(f"Safe Model Loader: FAILED - {e}")
         model_passed = False
 
-    # Test 4: Enhanced Color Analyzer (excellent implementation)
+    # Test 4: Color Analyzer
     if debug_mode:
-        print("\nStep 4: Testing Enhanced Color Analyzer...")
+        print("\nStep 4: Testing Color Analyzer...")
     analyzer = EnhancedColorAnalyzer(verbose=debug_mode if debug_mode else False)
 
     # Test critical colors
@@ -2762,45 +2755,52 @@ def test_complete_v2_4_integration(debug_mode: bool = False):
 
     color_passed = color_successes >= 3
     if debug_mode:
-        print(f"{'Enhanced Color Analyzer: SUCCESS' if color_passed else 'Enhanced Color Analyzer: FAILED'} - {color_successes}/4 critical colors passed")
+        print(f"{'Color Analyzer: SUCCESS' if color_passed else 'Color Analyzer: FAILED'} - {color_successes}/4 critical colors passed")
 
-    # Test 5: Complete System Integration
+    # Test 5: System Integration
     if debug_mode:
-        print("\nStep 5: Testing Complete System Integration...")
+        print("\nStep 5: Testing System Integration...")
     try:
         processor = EnhancedVideoProcessor(verbose=debug_mode, use_pose=False)  # Disable pose for testing
         if debug_mode:
-            print("Complete System Integration: SUCCESS")
+            print("System Integration: SUCCESS")
         integration_passed = True
     except Exception as e:
         if debug_mode:
-            print(f"Complete System Integration: FAILED - {e}")
+            print(f"System Integration: FAILED - {e}")
         integration_passed = False
 
     all_tests_passed = all([tracker_passed, region_passed, model_passed, color_passed, integration_passed])
 
     if debug_mode:
-        print(f"\nV2.4 COMPLETE INTEGRATION TEST RESULT: {'ALL SYSTEMS WORKING' if all_tests_passed else 'SOME ISSUES DETECTED'}")
+        print(f"\nINTEGRATION TEST RESULT: {'ALL SYSTEMS WORKING' if all_tests_passed else 'SOME ISSUES DETECTED'}")
 
         if all_tests_passed:
-            print("V2.4 Complete Integration benefits:")
-            print("   Enhanced IoU-based tracking: Eliminates ID switching")
-            print("   Safe model loading: Prevents silent corruption")
-            print("   Smart region extraction: Pose-based anatomical regions")
-            print("   Enhanced Lab color analysis: DeltaE2000 implementation")
-            print("   Complete integration: All improvements working together")
+            print("Integration benefits:")
+            print("   IoU-based tracking")
+            print("   Safe model loading")
+            print("   Smart region extraction")
+            print("   Lab color analysis")
+            print("   All improvements working together")
 
     return all_tests_passed
+def list_available_videos():
+  """List available video files in videos directory"""
+  video_extensions = ['.mp4', '.avi', '.mov', '.mkv', '.wmv']
+  videos = []
+  for ext in video_extensions:
+      videos.extend(VIDEOS_DIR.glob(f'*{ext}'))
+  return sorted(videos)
 
-def main_complete_enhanced_system():
-    """Main function for the complete enhanced V2.4 system"""
-    print("ENHANCED VIDEO PERSON SEARCH SYSTEM V2.4 - COMPLETE INTEGRATION")
+
+def main_system():
+    """Main function for the system"""
+    print("VIDEO PERSON SEARCH SYSTEM")
     print("="*80)
-    print("ENHANCED: IoU-based tracking (eliminates ID switching)")
-    print("ENHANCED: Safe model loading (prevents corruption)")
-    print("ENHANCED: Smart region extraction (pose-based)")
-    print("ENHANCED: Lab color analysis (DeltaE2000 implementation)")
-    print("INTEGRATION: All improvements working together")
+    print("IoU-based tracking")
+    print("Safe model loading")
+    print("Smart region extraction")
+    print("Lab color analysis")
     print("="*80)
 
     # Ask for debugging mode first
@@ -2812,19 +2812,19 @@ def main_complete_enhanced_system():
         print("Production mode - Clean output")
 
     while True:
-        print(f"\nCHOOSE V2.4 COMPLETE INTEGRATION OPERATION:")
+        print(f"\nCHOOSE OPERATION:")
 
         if debug_mode:
-            print(f"  1. Test complete V2.4 integration")
-            print(f"  2. Quick complete system test")
-            print(f"  3. Process video with complete V2.4 system (RECOMMENDED)")
-            print(f"  4. Test specific color with complete integration")
-            print(f"  5. Complete system status check")
+            print(f"  1. Test integration")
+            print(f"  2. Quick system test")
+            print(f"  3. Process video with system (RECOMMENDED)")
+            print(f"  4. Test specific color")
+            print(f"  5. System status check")
             print(f"  6. Test individual components")
             print(f"  0. Exit")
             max_option = 6
         else:
-            print(f"  1. Process video with complete V2.4 system")
+            print(f"  1. Process video with system")
             print(f"  0. Exit")
             max_option = 1
 
@@ -2838,20 +2838,42 @@ def main_complete_enhanced_system():
                 print("Goodbye!")
                 break
             elif choice == '1' and debug_mode:
-                test_complete_v2_4_integration(debug_mode)
+                test_integration(debug_mode)
             elif choice == '2' and debug_mode:
-                test_complete_v2_4_integration(debug_mode)
+                test_integration(debug_mode)
             elif choice == '3' and debug_mode or choice == '1' and not debug_mode:
-                # Complete V2.4 video processing
-                video_path = input("Enter video path (or press Enter for 'myvideo.mp4'): ").strip()
-                if not video_path:
-                    video_path = "myvideo.mp4"
-
+                  # Video processing
+                # Show available videos
+                available_videos = list_available_videos()
+                if available_videos:
+                    print(f"\nAvailable videos in {VIDEOS_DIR}:")
+                    for i, video in enumerate(available_videos, 1):
+                        print(f"  {i}. {video.name}")
+                    
+                    choice = input(f"\nSelect video by number (1-{len(available_videos)}) or enter custom path: ").strip()
+                    
+                    if choice.isdigit() and 1 <= int(choice) <= len(available_videos):
+                        video_path = str(available_videos[int(choice) - 1])
+                    elif choice:
+                        # If it's not an absolute path, assume it's in videos directory
+                        if not os.path.isabs(choice):
+                            video_path = str(VIDEOS_DIR / choice)
+                        else:
+                            video_path = choice
+                    else:
+                        if available_videos:
+                            video_path = str(available_videos[0])  # Default to first video
+                        else:
+                            video_path = str(VIDEOS_DIR / "myvideo.mp4")
+                else:
+                    video_path = input(f"No videos found in {VIDEOS_DIR}. Enter video path: ").strip()
+                    if not os.path.isabs(video_path):
+                        video_path = str(VIDEOS_DIR / video_path)
                 try:
-                    print(f"\nV2.4 COMPLETE INTEGRATION CONFIGURATION:")
-                    use_pose = input("Use MediaPipe pose detection? (enhanced regions but slower) (Y/n): ").strip().lower() != 'n'
+                    print(f"\nCONFIGURATION:")
+                    use_pose = input("Use MediaPipe pose detection? (smart regions but slower) (Y/n): ").strip().lower() != 'n'
                     verbose = debug_mode or input("Verbose output? (y/N): ").strip().lower() == 'y'
-                    draw_hud = input("Draw complete integration HUD overlay? (Y/n): ").strip().lower() != 'n'
+                    draw_hud = input("Draw HUD overlay? (Y/n): ").strip().lower() != 'n'
 
                     try:
                         interval = int(input("Attribute update interval in frames (default: 5): ").strip() or "5")
@@ -2865,30 +2887,30 @@ def main_complete_enhanced_system():
                         draw_hud=draw_hud
                     )
 
-                    # V2.4 Complete Integration - ONLY CUSTOM QUERY
-                    print(f"\nV2.4 COMPLETE INTEGRATION - CUSTOM QUERY BUILDER")
+                    # Custom Query Builder
+                    print(f"\nCUSTOM QUERY BUILDER")
                     print("Opening interactive query builder...")
 
                     query = processor.query_builder.build_query_interactive()
 
                     # Confirm before processing
-                    confirm = input(f"\nProcess video with V2.4 complete integration system? (y/N): ").strip().lower()
+                    confirm = input(f"\nProcess video with system? (y/N): ").strip().lower()
                     if confirm != 'y':
                         print("Processing cancelled")
                         continue
 
-                    output_path = f"output_v2.4_complete_{int(time.time())}.mp4"
-                    print(f"\nStarting V2.4 complete integration video processing...")
+                    output_path = f"output_{int(time.time())}.mp4"
+                    print(f"\nStarting video processing...")
                     print(f"Output will be saved as: {output_path}")
 
                     results = processor.process_video_enhanced(video_path, query, output_path)
 
                     if results['success']:
-                        print(f"\nV2.4 COMPLETE INTEGRATION PROCESSING COMPLETE!")
+                        print(f"\nPROCESSING COMPLETE!")
                         print(f"Output file: {output_path}")
-                        print(f"V2.4 Complete Integration Results:")
+                        print(f"Results:")
                         print(f"   Unique people tracked: {results['total_people']}")
-                        print(f"   V2.4 improvements applied: {results['v2_4_improvements']}")
+                        print(f"   Improvements applied: {results['improvements']}")
                         print(f"   Perfect matches found: {len(results['matches'])}")
                         print(f"   Match rate: {results['match_rate']:.1f}%")
                         print(f"   Processing time: {results['stats']['processing_time']:.1f}s")
@@ -2897,61 +2919,61 @@ def main_complete_enhanced_system():
                         if debug_mode:
                             comp_perf = results['component_performance']
                             print(f"\nCOMPONENT PERFORMANCE:")
-                            print(f"   Enhanced Tracking: {comp_perf['tracker']['assignment_success_rate']:.1%} assignment success")
+                            print(f"   Tracking: {comp_perf['tracker']['assignment_success_rate']:.1%} assignment success")
                             print(f"   Smart Regions: {comp_perf['regions']['pose_success_rate']:.1%} pose success")
-                            print(f"   Enhanced Detection: {comp_perf['detector']['model_success_rate']:.1%} model success")
+                            print(f"   Detection: {comp_perf['detector']['model_success_rate']:.1%} model success")
 
                         if results['matches']:
-                            print(f"\nTOP 3 V2.4 COMPLETE INTEGRATION MATCHES:")
+                            print(f"\nTOP 3 MATCHES:")
                             for i, match in enumerate(results['matches'][:3], 1):
                                 det = match['detection']
                                 print(f"  {i}. Track {match['track_id']:,} | Frame {match['frame']:,} ({match['timestamp']:.1f}s)")
                                 method_hair = det['hair_color']['method']
                                 method_shirt = det['shirt_color']['method']
-                                complete_hair = "[V2.4+]" if 'v2.4_complete_integration' in method_hair else "[V2.4]" if 'enhanced' in method_hair else ""
-                                complete_shirt = "[V2.4+]" if 'v2.4_complete_integration' in method_shirt else "[V2.4]" if 'enhanced' in method_shirt else ""
-                                print(f"     Hair: {det['hair_color']['color']} ({det['hair_color']['confidence']:.2f}) {complete_hair}")
-                                print(f"     Shirt: {det['shirt_color']['color']} ({det['shirt_color']['confidence']:.2f}) {complete_shirt}")
+                                integration_hair = "[I]" if 'integration' in method_hair else "[S]" if 'smart' in method_hair else ""
+                                integration_shirt = "[I]" if 'integration' in method_shirt else "[S]" if 'smart' in method_shirt else ""
+                                print(f"     Hair: {det['hair_color']['color']} ({det['hair_color']['confidence']:.2f}) {integration_hair}")
+                                print(f"     Shirt: {det['shirt_color']['color']} ({det['shirt_color']['confidence']:.2f}) {integration_shirt}")
 
                     else:
-                        print(f"\nV2.4 complete integration processing failed: {results.get('error', 'Unknown error')}")
+                        print(f"\nProcessing failed: {results.get('error', 'Unknown error')}")
 
                 except Exception as e:
-                    print(f"V2.4 complete integration processing failed: {e}")
+                    print(f"Processing failed: {e}")
 
             elif choice == '4' and debug_mode:
-                # Test specific color with complete V2.4 integration
+                # Test specific color
                 try:
                     rgb_input = input("Enter RGB values (e.g., 173,216,230): ").strip()
                     r, g, b = map(int, rgb_input.split(','))
                     attribute = input("Enter attribute (shirt_color/hair_color): ").strip()
                     expected = input("Expected color (optional, press Enter to skip): ").strip() or None
 
-                    print(f"\nV2.4 COMPLETE INTEGRATION SINGLE COLOR TEST:")
+                    print(f"\nSINGLE COLOR TEST:")
                     analyzer = EnhancedColorAnalyzer(verbose=debug_mode)
                     result_color, confidence = analyzer.classify_color_enhanced((r, g, b), attribute)
 
-                    print(f"\nV2.4 COMPLETE INTEGRATION SUMMARY:")
+                    print(f"\nSUMMARY:")
                     print(f"   RGB({r}, {g}, {b}) -> {result_color} ({confidence:.3f})")
 
                     if expected:
                         is_correct = result_color == expected
-                        print(f"   Status: {'V2.4 COMPLETE INTEGRATION CORRECT' if is_correct else 'NEEDS MORE WORK'}")
+                        print(f"   Status: {'CORRECT' if is_correct else 'NEEDS MORE WORK'}")
 
                 except Exception as e:
-                    print(f"V2.4 complete integration test failed: {e}")
+                    print(f"Test failed: {e}")
 
             elif choice == '5' and debug_mode:
-                # Complete V2.4 system status check
-                print("V2.4 COMPLETE INTEGRATION SYSTEM STATUS CHECK")
+                # System status check
+                print("SYSTEM STATUS CHECK")
                 print("-" * 60)
 
-                # Enhanced Tracker check
+                # Tracker check
                 try:
                     tracker = EnhancedTracker(verbose=False)
-                    print(f"Enhanced IoU-based Tracker: READY")
+                    print(f"IoU-based Tracker: READY")
                 except Exception as e:
-                    print(f"Enhanced Tracker: FAILED - {e}")
+                    print(f"Tracker: FAILED - {e}")
 
                 # Smart Region Extractor check
                 try:
@@ -2977,11 +2999,11 @@ def main_complete_enhanced_system():
                 except Exception as e:
                     print(f"Safe Model Loader check failed: {e}")
 
-                # Enhanced Color Analyzer check
+                # Color Analyzer check
                 try:
                     analyzer = EnhancedColorAnalyzer(verbose=False)
 
-                    # Test complete integration improvements
+                    # Test improvements
                     test_cases = [
                         ((173, 216, 230), 'blue', 'shirt_color'),
                         ((255, 0, 0), 'red', 'shirt_color'),
@@ -2995,70 +3017,68 @@ def main_complete_enhanced_system():
                         if color == expected and confidence > 0.6:
                             successes += 1
 
-                    print(f"Enhanced Color Analyzer: {successes}/4 tests passed ({successes/4:.1%})")
+                    print(f"Color Analyzer: {successes}/4 tests passed ({successes/4:.1%})")
 
                 except Exception as e:
-                    print(f"Enhanced Color Analyzer test failed: {e}")
+                    print(f"Color Analyzer test failed: {e}")
 
-                print(f"V2.4 COMPLETE INTEGRATION System status: ALL COMPONENTS INTEGRATED")
+                print(f"System status: ALL COMPONENTS INTEGRATED")
 
             elif choice == '6' and debug_mode:
                 # Test individual components
-                test_complete_v2_4_integration(debug_mode)
+                test_integration(debug_mode)
 
             else:
                 print("Invalid choice. Please try again.")
 
         except KeyboardInterrupt:
-            print(f"\nExiting V2.4 complete integration system...")
+            print(f"\nExiting system...")
             break
         except Exception as e:
-            print(f"V2.4 complete integration system error: {e}")
+            print(f"System error: {e}")
 
 if __name__ == "__main__":
-    print("ENHANCED VIDEO PERSON SEARCH SYSTEM V2.4 LOADED - COMPLETE INTEGRATION")
-    print("ENHANCED: IoU-based tracking (eliminates ID switching)")
-    print("ENHANCED: Safe model loading (prevents corruption)")
-    print("ENHANCED: Smart region extraction (pose-based)")
-    print("ENHANCED: Lab color analysis (DeltaE2000 implementation)")
-    print("INTEGRATION: All improvements working together seamlessly")
+    print("VIDEO PERSON SEARCH SYSTEM LOADED")
+    print("IoU-based tracking")
+    print("Safe model loading")
+    print("Smart region extraction")
+    print("Lab color analysis")
     print(f"Model required: {MODEL_PATH}")
 
     # Ask if user wants detailed startup test
     detailed_startup = input("\nRun detailed startup test? (y/N): ").strip().lower() == 'y'
 
     if detailed_startup:
-        print("\nRunning V2.4 complete integration startup test...")
+        print("\nRunning startup test...")
         try:
             # Quick integration test
             discovered = discover_heads_from_checkpoint(torch.load(MODEL_PATH, map_location='cpu')['model_state_dict']) if Path(MODEL_PATH).exists() else {}
             if discovered:
-                print("V2.4 complete integration startup test: All systems integrated!")
+                print("Startup test: All systems integrated!")
 
                 # Run full test suite
-                test_complete_v2_4_integration(debug_mode=True)
+                test_integration(debug_mode=True)
             else:
-                print("V2.4 complete integration startup test: Model head discovery needs attention")
+                print("Startup test: Model head discovery needs attention")
         except Exception as e:
-            print(f"V2.4 complete integration startup test: {e}")
+            print(f"Startup test: {e}")
     else:
         print("Ready for production use")
 
     print("\n" + "="*80)
-    print("V2.4 COMPLETE INTEGRATION SYSTEM READY")
-    print("Run main_complete_enhanced_system() for the complete integrated experience")
+    print("SYSTEM READY")
+    print("Run main_system() for the integrated experience")
 
     if detailed_startup:
-        print("\nV2.4 COMPLETE INTEGRATION BENEFITS:")
-        print("   Enhanced IoU-based tracking: 70-80% fewer ID switches")
-        print("   Safe model loading: 100% corruption prevention")
-        print("   Smart pose-based regions: 30-40% better color accuracy")
-        print("   Lab + DeltaE2000 color analysis: Preserved and enhanced")
-        print("   Complete integration: All improvements working seamlessly together")
-        print("   Expected overall improvement: 15-25% better accuracy")
-        print("   ETA calculation: Real-time progress with accurate time estimates")
-        print("   Debug mode: Clean production interface with optional detailed diagnostics")
+        print("\nSYSTEM BENEFITS:")
+        print("   IoU-based tracking")
+        print("   Safe model loading")
+        print("   Smart pose-based regions") 
+        print("   Lab + DeltaE2000 color analysis")
+        print("   Integration of all improvements")
+        print("   ETA calculation")
+        print("   Debug mode")
 
     print("="*80)
     if __name__ == "__main__":
-        main_complete_enhanced_system()
+        main_system()
