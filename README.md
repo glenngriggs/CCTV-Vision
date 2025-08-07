@@ -2,6 +2,9 @@
 
 *Search hours of footage by **appearance** instead of scrubbing frame‑by‑frame.*
 
+Video Demo
+https://glenngriggs.github.io/CCTV-Vision/
+
 ---
 
 ## Table of Contents
