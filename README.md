@@ -1,4 +1,4 @@
-# 🎯 Optimal CCTV-Vision Models
+## CCTV-Vision
 
 ## Performance Results
 - **Detection Accuracy**: 89.25%
