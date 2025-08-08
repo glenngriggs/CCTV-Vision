@@ -1,0 +1,38 @@
+name: cctv_vision
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Python version
+  - python=3.9
+
+  # Core scientific computing (conda)
+  - numpy>=1.21.0
+  - scipy>=1.7.0
+  - scikit-learn>=1.0.0
+  - scikit-image>=0.18.0
+  - pillow>=8.3.0
+
+  # Computer vision (conda)
+  - opencv>=4.5.0
+
+  # PyTorch ecosystem (conda) - CPU only
+  - pytorch>=1.9.0
+  - torchvision>=0.10.0
+  - torchaudio>=0.9.0
+  - cpuonly
+
+  # Pip dependencies
+  - pip
+  - pip:
+    # Deep learning models
+    - timm>=0.6.0
+    - ultralytics>=8.0.0
+    
+    # Computer vision
+    - mediapipe>=0.8.10
+    
+    # Additional utilities
+    - pathlib2  # For better Path support on older systems
