@@ -1,4 +1,4 @@
-# Video Person Search System
+#Video Person Search System
 
 *Search hours of footage by **appearance** instead of scrubbing frame‑by‑frame.*
 
