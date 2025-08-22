@@ -88,7 +88,7 @@ Epochs        : 48
 
 ## Model Download
 
-**⚠️ IMPORTANT**: Download the trained model before running the system:
+** IMPORTANT**: Download the trained model before running the system:
 
 **Download Link**: [ULTIMATE_model_score_0.9398_20250716_110939.pt](https://drive.google.com/file/d/1rJOY2qOOnPKr-dUQKbszJOZSxdJ4mJMv/view?usp=drive_link)
 
@@ -248,7 +248,7 @@ processor = EnhancedVideoProcessor(
 
 ### Common Issues
 
-#### 🚨 **Model Loading Errors**
+#### **Model Loading Errors**
 ```
 Error: Model file not found
 Error: invalid load key, 'v'
@@ -259,7 +259,7 @@ Error: invalid load key, 'v'
 3. **Verify download**: File should be ~200MB, not 0 bytes
 4. **Re-download if corrupted**: Delete and download again
 
-#### 🎥 **Video Processing Errors**
+####  **Video Processing Errors**
 ```
 Error: Cannot open video
 Error: moov atom not found
@@ -270,7 +270,7 @@ Error: moov atom not found
 3. **Re-encode if needed**: Use VLC or FFmpeg to convert
 4. **Use test video**: Try with a different, known-working video file
 
-#### 📦 **Environment Issues**
+####  **Environment Issues**
 ```
 ModuleNotFoundError: No module named 'xyz'
 ```
@@ -279,7 +279,7 @@ ModuleNotFoundError: No module named 'xyz'
 2. **Activate environment**: `conda activate cctv_vision`
 3. **Reinstall dependencies**: `pip install -r requirements.txt`
 
-#### ⚡ **Performance Issues**
+####  **Performance Issues**
 ```
 Very slow processing / Out of memory
 ```
