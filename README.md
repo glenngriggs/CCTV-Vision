@@ -316,4 +316,4 @@ WARNING: Using NORM_RECT without IMAGE_DIMENSIONS...
 
 ## License
 
-MIT © Glenn Griggs, Shubhanshu Pokharel & Lucas Morris
+MIT © Daniel Glenn Griggs, Shubhanshu Pokharel & Lucas Morris
