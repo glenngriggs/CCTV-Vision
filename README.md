@@ -1,3 +1,9 @@
+## Authorship & Collaboration
+This project was completed collaboratively by **Lucas Morris**, **Glenn Griggs**, and **Shubhanshu Pokharel**.  
+
+We used **VS Code Live Share**, so commits may cluster under whoever hosted the session.  
+**Contribution statement:** Work was divided and reviewed respectively;
+
 # Video Person Search System
 
 *Search hours of footage by **appearance** instead of scrubbing frame‑by‑frame.*
