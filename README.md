@@ -2,7 +2,7 @@
 This project was completed collaboratively by **Lucas Morris**, **Glenn Griggs**, and **Shubhanshu Pokharel**.  
 
 We used **VS Code Live Share**, so commits may cluster under whoever hosted the session.  
-**Contribution statement:** Work was divided evenly and jointly reviewed.
+**Contribution statement:** Work was evenly divided and jointly reviewed.
 
 # Video Person Search System
 
